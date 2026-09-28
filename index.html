@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b0f0e">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Calculas Typing — a fast, privacy-conscious typing practice app.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230f172a'/%3E%3Cpath d='M17 16h30v8H25v9h19v8H25v7h22v8H17z' fill='%2338bdf8'/%3E%3C/svg%3E">
+  <title>Calculas Typing</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="topbar">
+    <div class="brand" aria-label="Calculas Typing home">
+      <div class="logo" aria-hidden="true"><span>C</span></div>
+      <div>
+        <strong>Calculas Typing</strong>
+        <span>Type. Improve. Track.</span>
+      </div>
+    </div>
+    <nav class="nav" aria-label="Primary navigation">
+      <button class="nav-btn active" data-view="test">Test</button>
+      <button class="nav-btn" data-view="practice">Practice</button>
+      <button class="nav-btn" data-view="progress">Progress</button>
+      <button class="nav-btn" data-view="settings">Settings</button>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+    <section id="view-test" class="view active" aria-labelledby="test-title">
+      <div class="hero card">
+        <div>
+          <p class="eyebrow">Typing practice</p>
+          <h1 id="test-title">Build faster, more accurate typing.</h1>
+          <p class="subtext">Pick a test length, type the passage, see your WPM instantly, then practice the skills you missed.</p>
+        </div>
+        <div class="quick-stats" aria-label="Quick statistics">
+          <div><span id="best-wpm">0</span><small>Best WPM</small></div>
+          <div><span id="tests-count">0</span><small>Tests</small></div>
+          <div><span id="accuracy-stat">—</span><small>Last accuracy</small></div>
+        </div>
+      </div>
+
+      <section class="card setup-card" aria-label="Test setup">
+        <div class="setup-row">
+          <div class="control-group">
+            <span class="control-label">Test length</span>
+            <div class="segmented" role="group" aria-label="Test length">
+              <button class="segment active" data-duration="30">30 sec</button>
+              <button class="segment" data-duration="60">60 sec</button>
+              <button class="segment" data-duration="120">120 sec</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <span class="control-label">Mode</span>
+            <div class="segmented" role="group" aria-label="Typing mode">
+              <button class="segment active" data-mode="standard">Standard</button>
+              <button class="segment" data-mode="numbers">Numbers</button>
+              <button class="segment" data-mode="punctuation">Punctuation</button>
+            </div>
+          </div>
+          <div class="setup-actions">
+            <button id="start-btn" class="primary-btn">Start</button>
+            <button id="reset-btn" class="ghost-btn">Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card typing-card" aria-label="Typing test">
+        <div class="typing-toolbar"><span id="test-status-dot" class="status-dot" aria-hidden="true"></span><span id="test-status-label">Ready to type</span><span class="toolbar-divider" aria-hidden="true"></span><span id="sound-status" class="sound-status">Sound off</span></div>
+        <div class="typing-header">
+          <div class="metric"><span id="time-value">0</span><small>sec</small></div>
+          <div class="metric"><span id="wpm-value">0</span><small>WPM</small></div>
+          <div class="metric"><span id="accuracy-value">100</span><small>Accuracy</small></div>
+          <div class="progress-wrap" aria-label="Time remaining"><div id="timer-progress" class="progress-bar"></div></div>
+        </div>
+        <div id="text-display" class="text-display" tabindex="0" aria-label="Text to type"></div>
+        <textarea id="typing-input" class="typing-input" aria-label="Type the text shown above" spellcheck="false" autocomplete="off" autocapitalize="off" disabled></textarea>
+        <div class="typing-hint"><span id="status-message">Press Start to begin.</span><span>Tip: <kbd>Tab</kbd> + <kbd>Enter</kbd> restarts.</span></div>
+      </section>
+    </section>
+
+    <section id="view-practice" class="view" aria-labelledby="practice-title">
+      <div class="section-heading"><div><p class="eyebrow">Targeted practice</p><h2 id="practice-title">Turn mistakes into reps.</h2><p class="subtext">Your weakest character patterns are generated from your recent tests.</p></div><button id="practice-start" class="primary-btn">Start practice</button></div>
+      <div id="weakness-grid" class="practice-grid"></div>
+    </section>
+
+    <section id="view-progress" class="view" aria-labelledby="progress-title">
+      <div class="section-heading"><div><p class="eyebrow">Your progress</p><h2 id="progress-title">Small gains add up.</h2><p class="subtext">Everything here is stored on this device. Nothing is sent to a server.</p></div><button id="clear-progress" class="danger-btn">Clear progress</button></div>
+      <div class="dashboard-grid">
+        <div class="card big-stat"><span id="progress-best">0</span><small>Best WPM</small></div>
+        <div class="card big-stat"><span id="progress-average">0</span><small>Average WPM</small></div>
+        <div class="card big-stat"><span id="progress-accuracy">0%</span><small>Average accuracy</small></div>
+        <div class="card big-stat"><span id="progress-time">0m</span><small>Typing time</small></div>
+      </div>
+      <div class="card chart-card">
+        <div class="chart-title"><h3>Recent WPM</h3><span id="streak-value">0 day streak</span></div>
+        <canvas id="progress-chart" height="260" aria-label="Recent WPM chart"></canvas>
+        <div id="history-empty" class="empty">Complete a test to see your progress.</div>
+      </div>
+      <div class="card history-card"><h3>Recent tests</h3><div id="history-list"></div></div>
+    </section>
+
+    <section id="view-settings" class="view" aria-labelledby="settings-title">
+      <div class="section-heading"><div><p class="eyebrow">Preferences</p><h2 id="settings-title">Make the test yours.</h2><p class="subtext">Settings stay in this browser and do not require an account.</p></div></div>
+      <div class="settings-list card">
+        <div class="setting setting-audio">
+          <span><strong>Typewriter sound</strong><small>Play a fuller keypress sound while you type. Audio is synthesized locally and no sound files are loaded.</small></span>
+          <div class="setting-controls">
+            <button id="sound-preview" class="audio-preview" type="button">Preview</button>
+            <input id="sound-toggle" type="checkbox" aria-label="Enable typewriter sound">
+            <span id="sound-switch" class="switch" role="switch" tabindex="0" aria-checked="false" aria-label="Enable typewriter sound"></span>
+          </div>
+        </div>
+        <label class="setting audio-control"><span><strong>Sound volume</strong><small id="sound-volume-label">45%</small></span><input id="sound-volume" type="range" min="0" max="100" value="45" step="1" aria-label="Sound volume"></label>
+        <label class="setting audio-control"><span><strong>Sound profile</strong><small>Choose the feel of the keystroke.</small></span><select id="sound-profile" class="select-control" aria-label="Sound profile"><option value="typewriter">Typewriter</option><option value="soft">Soft click</option><option value="mechanical">Mechanical</option></select></label>
+        <label class="setting"><span><strong>Reduce motion</strong><small>Use fewer animations throughout the interface.</small></span><input id="motion-toggle" type="checkbox"><span class="switch" aria-hidden="true"></span></label>
+        <label class="setting"><span><strong>High contrast</strong><small>Increase contrast for text and controls.</small></span><input id="contrast-toggle" type="checkbox"><span class="switch" aria-hidden="true"></span></label>
+      </div>
+      <div class="card note-card"><h3>Privacy & reliability</h3><p>Calculas Typing works without an account, analytics, email, payments, OAuth, AdSense, or a remote database. Test history is kept in local browser storage only.</p></div>
+    </section>
+  </main>
+
+  <dialog id="result-dialog" class="result-dialog">
+    <div class="result-content">
+      <div class="result-top"><div><p class="eyebrow">Test complete</p><h2>Your result</h2></div><button id="close-result" class="icon-btn" aria-label="Close results">×</button></div>
+      <div class="result-stats"><div><strong id="result-wpm">0</strong><span>WPM</span></div><div><strong id="result-accuracy">0%</strong><span>Accuracy</span></div><div><strong id="result-correct">0</strong><span>Correct chars</span></div><div><strong id="result-errors">0</strong><span>Errors</span></div></div>
+      <p id="result-message" class="result-message"></p>
+      <div class="result-actions"><button id="result-practice" class="secondary-btn">Practice weak spots</button><button id="result-retry" class="primary-btn">Try Again</button></div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
